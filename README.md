@@ -15,6 +15,20 @@ To get started with this project, follow these steps:
 The Mars Rover Kata
 Research suggests that the original version of this problem was part of the Thoughtworks interview loop as far back as 2007. I haven’t been able to find an authoritative source, but the consensus view seems to be that the form was something like what follows below.
 
+Rectangle
+Position
+Location
+x,y grid
+position = 0, 0, N = bottom left, facing North
+L (90 degree left), R (90 degree right), M (fwd 1 grid point in direction)
+INPUT: 0,0 (upper right), 0,0,N (rover position), LMLMLMLMM (instructions)
+5 5
+1 2 N
+LMLMLMLMM
+3 3 E
+MMRMMRMRRM
+OUTPUT: 1 3 N, 5 1 E
+
 Problem
 A squad of robotic rovers are to be landed by NASA on a plateau on Mars. This plateau, which is curiously rectangular, must be navigated by the rovers so that their on-board cameras can get a complete view of the surrounding terrain to send back to Earth.
 
@@ -42,3 +56,4 @@ LMLMLMLMM
 3 3 E
 MMRMMRMRRM
 Expected Output:
+

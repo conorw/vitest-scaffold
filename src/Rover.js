@@ -19,11 +19,12 @@
 
 // EXAMPLE:
 // Test Input:
-// 5 5
-// 1 2 N
-// LMLMLMLMM
+// 5 5 - set grid
+// 1 2 N - set rover position and direction
+// LMLMLMLMM - execute command
 // 3 3 E
 // MMRMMRMRRM
+// execute all instructions
 // Expected Output:
 
 export default class Rover {

@@ -58,75 +58,62 @@
 // getPositionAndDirection(string)
 // executeAllInstructions(string)
 
-import { describe, it, expect, beforeAll } from "vitest";
-import MarsRover from "./MarsRover";
-
-// add inital tests here for all functions of the MarsRover class, use given, when, then structure
-// given: the initial state of the rover
-// when: the function is called
-// then: the expected output is returned
-describe("MarsRover", () => {
-  describe("given a 5 5 grid", () => {
-    const marsRover = new MarsRover();
-    beforeAll(() => {
-      marsRover.setGrid("5 5");
+export default class MarsRover {
+  setGrid(grid) {
+    this.grid = grid.split(" ").map(Number);
+  }
+  setRoverPositionAndDirection(roverPositionAndDirection) {
+    const items = roverPositionAndDirection.trim().split(" ");
+    this.roverPositionXY = [parseInt(items[0]), parseInt(items[1])];
+    this.roverDirection = items[2];
+  }
+  executeRoverInstructions(instructions) {
+    instructions.split("").forEach((instruction) => {
+      if (instruction === "M") {
+        this.move();
+      } else {
+        this.setDirection(instruction);
+      }
     });
-    describe("given a rover initial position of 0 0 N", () => {
-      beforeAll(() => {
-        marsRover.setRoverPositionAndDirection("0 0 N");
-      });
-      describe("when the rover is instructed to turn right", () => {
-        beforeAll(() => {
-          marsRover.executeRoverInstructions("R");
-        });
-        it("then the rover should be at 0 0 E", () => {
-          expect(marsRover.getPositionAndDirection()).toBe("0 0 E");
-        });
-        describe("when the rover is instructed to move left", () => {
-          beforeAll(() => {
-            marsRover.executeRoverInstructions("L");
-          });
-          it("then the rover should be at 0 0 N", () => {
-            expect(marsRover.getPositionAndDirection()).toBe("0 0 N");
-          });
-          describe("when the rover is instructed to move forward", () => {
-            beforeAll(() => {
-              marsRover.executeRoverInstructions("M");
-            });
-            it("then the rover should be at 0 1 N", () => {
-              expect(marsRover.getPositionAndDirection()).toBe("0 1 N");
-            });
-          });
-          // TODO: add tests for when the rover is instructed to move to the edge of the grid
-          describe("when the rover position is reset", () => {
-            beforeAll(() => {
-              marsRover.setRoverPositionAndDirection("0 0 W");
-            });
-            it("then the rover cant move left", () => {
-              marsRover.executeRoverInstructions('M')
-              expect(marsRover.getPositionAndDirection()).toBe("0 0 W");
-            });
-          });
-        });
-      });
-    });
-  });
-});
-// TODO: add more tests for executing the full instructions
-describe("MarsRover full instrictions", () => {
-  describe("given a 10 10 grid and a full set of instructions", () => {
-    const marsRover = new MarsRover();
-    const fullInstructions = `5 5
-    0 0 N
-    RM
-    0 0 E
-    MM
-    1 1 N
-    RM`;
-    it("then the final positions should be 1 0 E, 2 0 E, 2 1 E", () => {
-      expect(marsRover.executeAllInstructions(fullInstructions)).toBe(
-        "1 0 E\n2 0 E\n2 1 E"
-      );
-    });
-  });
-});
+  }
+  setDirection(direction) {
+    const directions = ["N", "E", "S", "W"];
+    const index = directions.indexOf(this.roverDirection);
+    if (direction === "L") {
+      this.roverDirection = directions[(index + 3) % 4];
+    } else {
+      this.roverDirection = directions[(index + 1) % 4];
+    }
+  }
+  move() {
+    const [x, y] = this.roverPositionXY;
+    // the rover will not move if it reaches the edge of the plateau
+    if (this.roverDirection === "N" && y < this.grid[1]) {
+      this.roverPositionXY[1] = y + 1;
+    } else if (this.roverDirection === "E" && x < this.grid[0]) {
+      this.roverPositionXY[0] = x + 1;
+    } else if (this.roverDirection === "S" && y > 0) {
+      this.roverPositionXY[1] = y - 1;
+    } else if (this.roverDirection === "W" && x > 0) {
+      this.roverPositionXY[0] = x - 1;
+    }
+    // return the string output
+    return this.getPositionAndDirection();
+  }
+  getPositionAndDirection() {
+    console.log(this.roverPositionXY);
+    return this.roverPositionXY.join(" ") + " " + this.roverDirection;
+  }
+  executeAllInstructions(input) {
+    const instructions = input.split("\n");
+    let output = "";
+    // first line is the grid
+    this.setGrid(instructions[0]);
+    for (let i = 1; i < instructions.length; i += 2) {
+      this.setRoverPositionAndDirection(instructions[i]);
+      this.executeRoverInstructions(instructions[i + 1]);
+      output += this.getPositionAndDirection() + "\n";
+    }
+    return output.trim();
+  }
+}
